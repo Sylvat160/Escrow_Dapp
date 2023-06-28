@@ -19,6 +19,15 @@ contract EscrowFactory {
         escrowsId++;
     }
 
+    function allEscrows() external view returns (Escrows[] memory) {
+        uint256 len = escrows.length;
+        Escrows[] memory escrowList = new Escrows[](len);
+        for (uint i = 0; i < len; i++) {
+            escrowList[i] = escrows[i];
+        }
+        return escrowList;
+    }
+
     function getEscrowById(uint256 _id) external view returns (Escrows memory) {
         return escrows[_id];
     }

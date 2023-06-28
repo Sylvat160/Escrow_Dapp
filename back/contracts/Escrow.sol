@@ -17,8 +17,17 @@ contract Escrow {
 		escrowFactory.addEscrow(address(this), owner);
 	}
 
-	// function addToFactory(address _escrow) external onlyOwner {
-	// }
+	
+
+	function getEscrowById(uint256 _id) external view returns (Escrows memory) {
+
+		return escrowFactory.getEscrowById(_id);
+	}
+	function getAllEscrow() external view returns (Escrows[] memory) {
+		return escrowFactory.allEscrows();
+	}
+
+
 
 	modifier onlyOwner() {
 		require(msg.sender == owner, 'You\'re not the owner');
@@ -44,6 +53,9 @@ contract Escrow {
 
 	}
 
+	function setFactoryAddress(address _contractAddress) external onlyOwner {
+		escrowFactory = EscrowFactoryInterface(_contractAddress);
+	}
 
 
 }

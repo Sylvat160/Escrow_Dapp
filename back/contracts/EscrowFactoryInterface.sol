@@ -12,5 +12,5 @@ interface EscrowFactoryInterface {
 
     function addEscrow(address _escrow, address _owner) external;
     function getEscrowById(uint256 _id) external view returns (Escrows memory);
-    
+    function allEscrows() external view returns (Escrows[] memory);
 }
