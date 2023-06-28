@@ -8,11 +8,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        'primary-black': '#1A232E',
-        'secondary-white': '#c7c7c7',
+        siteblack: '#131519',
+        siteDimBlack: '#191d23',
+        siteViolet: '#26E7EE',
+        siteWhite: '#9eacc7',
       },
       transitionTimingFunction: {
         'out-flex': 'cubic-bezier(0.05, 0.6, 0.4, 0.9)',
+      },
+      fontFamily: {
+        rajdhani: ['Rajdhani', 'sans-serif'],
       },
     },  
   },
