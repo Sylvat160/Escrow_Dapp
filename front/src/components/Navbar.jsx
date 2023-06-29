@@ -1,8 +1,12 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { logo, setting } from "../assets";
 import { shortenAddress } from "../utils";
+import { useGlobalContext } from "../context";
+import { CustomButton } from "../components";
 
 const Navbar = () => {
+  const { walletAddress, updateCurrentWalletAddress } = useGlobalContext();
+
   return (
     <div className="w-full">
       <div className="absolute w-[20%] inset-0  gradient-01 h-40 top-20" />
@@ -14,12 +18,25 @@ const Navbar = () => {
           <span className="font-serif"> Escrow Decentralized App </span>
         </div>
         <div className="flex">
-          <div className="bg-[#111111] p-1 rounded-md mx-2">
-            {shortenAddress("0x452A12ad65C41D9A88f2515Af6c6F364060D4CE8")}
-          </div>
-          <div className="bg-[#111111] p-1 rounded-md flex items-center justify-center w-7 cursor-pointer">
-            <img src={setting} alt="setting" className="w-4" />
-          </div>
+          {walletAddress == "" ? (
+            <>
+              <CustomButton
+                type="button"
+                title="Connect"
+                handleClick={updateCurrentWalletAddress}
+                restStyles="hover:bg-[#328A9A]"
+              />
+            </>
+          ) : (
+            <>
+              <div className="bg-[#111111] p-1 rounded-md mx-2">
+                {shortenAddress(walletAddress)}
+              </div>
+              <div className="bg-[#111111] p-1 rounded-md flex items-center justify-center w-7 cursor-pointer">
+                <img src={setting} alt="setting" className="w-4" />
+              </div>
+            </>
+          )}
         </div>
       </div>
 

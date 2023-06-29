@@ -1,9 +1,17 @@
 import { useState } from "react";
-import { Navbar, InputField, CustomButton, Datatable } from "./components";
+import { Navbar, InputField, CustomButton, Datatable, Alert, OnBoardModal } from "./components";
+import { useGlobalContext } from "./context";
 
 function App() {
+
+  const { showAlert, showTable } = useGlobalContext();
+
   return (
     <div className="overflow-hidden flex flex-col justify-center items-center md:px-20 px-1">
+      <OnBoardModal />
+      {showAlert?.status && (
+        <Alert type={showAlert.type} message={showAlert.message} />
+      )}
       <Navbar />
 
       <div className="flex md:flex-row flex-col w-full justify-center items-center mt-4">
@@ -44,7 +52,7 @@ function App() {
         </div>
       </div>
 
-      <Datatable />
+      {showTable && <Datatable /> }
     </div>
   );
 }
