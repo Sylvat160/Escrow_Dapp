@@ -23,7 +23,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="bg-[#111111] h-14 md:flex hidden mt-5 justify-center items-center">
+      <div className="bg-[#111111] h-14 flex mt-5 justify-center items-center">
         <h1 className="font-serif text-[45px] text-gray-400"> Escrow </h1>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navbar, InputField, CustomButton } from "./components";
+import { Navbar, InputField, CustomButton, Datatable } from "./components";
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <Navbar />
 
       <div className="flex md:flex-row flex-col w-full justify-center items-center mt-4">
-        <div className="bg-[#111111] md:w-[45%] mr-5 drop-shadow-2xl border-[0.01px] border-gray-500 rounded-md ml-5">
+        <div className="bg-[#111111] md:w-[45%]  drop-shadow-2xl border-[0.01px] border-gray-500 rounded-md">
           <h1 className="text-[24px] m-3 border-b-[0.01px] border-gray-600">
             Deploy contract
           </h1>
@@ -22,7 +22,7 @@ function App() {
           </div>
         </div>
         <div className="w-5 h-5" />
-        <div className="bg-[#111111] md:w-[45%] mr-5 drop-shadow-2xl border-[0.01px] border-gray-500 rounded-md">
+        <div className="bg-[#111111] md:w-[45%] drop-shadow-2xl border-[0.01px] border-gray-500 rounded-md">
           <h1 className="text-[24px] m-3 border-b-[0.01px] border-gray-600">
             {" "}
             Initialise Escrow{" "}
@@ -43,6 +43,8 @@ function App() {
           </form>
         </div>
       </div>
+
+      <Datatable />
     </div>
   );
 }

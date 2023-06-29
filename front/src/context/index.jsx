@@ -1,5 +1,15 @@
-import logo from './logo.png'
+import React, { useContext, createContext } from "react";
 
-export {
-    logo
+const GlobalContext = createContext()
+
+export const GlobalContextProvider = ({ children }) => {
+
+    return (
+        <GlobalContext.Provider
+        value={{}}>
+            { children }
+        </GlobalContext.Provider>
+    )
 }
+
+export const useGlobalContext = () => useContext(GlobalContext)
