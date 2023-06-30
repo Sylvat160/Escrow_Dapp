@@ -1,3 +1,5 @@
+import { ethers } from 'ethers'
+
 // This function takes an Ethereum address and returns a shortened version of it
 // by displaying the first `length` characters, followed by "....", and then the last `length` characters.
 export const shortenAddress = (address) => {
@@ -7,6 +9,15 @@ export const shortenAddress = (address) => {
   // Otherwise, return the shortened version of the address
   return `${address.slice(0, 7)}...${address.slice(-3)}`
 }
+
+export const shortenBalance = (balance) => {
+  // If the address is not defined, return null
+  if (!balance) return null
+
+  // Otherwise, return the shortened version of the address
+  return `${balance.slice(0, 5)}`
+}
+
 export const mediumAddress = (address) => {
   // If the address is not defined, return null
   if (!address) return null
@@ -31,6 +42,13 @@ async function handleConnection(accounts) {
     const fetchedAccounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     })
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    const signer = provider.getSigner();
+    // use loacal storage to store povidr and signer
+    localStorage.setItem('provider', provider)
+    localStorage.setItem('signer', signer)
+
+    console.log(signer);
 
     return fetchedAccounts
   }
@@ -71,7 +89,7 @@ async function requestBalance(currentAccount) {
   return { currentBalance, err: true }
 }
 
-export const GetParams = async (setWalletAddress) => {
+export const GetParams = async (setWalletAddress ) => {
   const response = {
     isError: false,
     message: '',
@@ -96,7 +114,7 @@ export const GetParams = async (setWalletAddress) => {
 
   response.account = currentAccount
 
-  if (getChainID() !== 31337) {
+  if (getChainID() !== 11155111) {
     response.step = 2
 
     return response

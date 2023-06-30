@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
 import { logo, setting } from "../assets";
-import { shortenAddress } from "../utils";
+import { shortenAddress, shortenBalance } from "../utils";
 import { useGlobalContext } from "../context";
 import { CustomButton } from "../components";
 
 const Navbar = () => {
-  const { walletAddress, updateCurrentWalletAddress } = useGlobalContext();
+  const { walletAddress, updateCurrentWalletAddress, balance } = useGlobalContext();
 
   return (
     <div className="w-full">
@@ -29,6 +29,9 @@ const Navbar = () => {
             </>
           ) : (
             <>
+              <div className="bg-[#111111] p-1 rounded-md mx-2">
+                { shortenBalance(balance) } Eth
+              </div>
               <div className="bg-[#111111] p-1 rounded-md mx-2">
                 {shortenAddress(walletAddress)}
               </div>

@@ -1,10 +1,64 @@
 import { useState } from "react";
-import { Navbar, InputField, CustomButton, Datatable, Alert, OnBoardModal } from "./components";
+import {
+  Navbar,
+  InputField,
+  CustomButton,
+  Datatable,
+  Alert,
+  OnBoardModal,
+} from "./components";
 import { useGlobalContext } from "./context";
 
 function App() {
+  const {
+    showAlert,
+    showTable,
+    deployContract,
+    contract,
+    initContract,
+    setShowAlert,
+  } = useGlobalContext();
 
-  const { showAlert, showTable } = useGlobalContext();
+  const [form, setForm] = useState({
+    arbiter: "",
+    beneficiary: "",
+    value: "",
+  });
+
+  const handleFormFieldChange = (fieldName, value) => {
+    setForm({ ...form, [fieldName]: value });
+  };
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    if (form.arbiter == "" || form.beneficiary == "" || form.value == "") {
+      setShowAlert({
+        status: true,
+        type: "error",
+        message: "Please fill all the fields",
+      });
+      return;
+    }
+    else if (form.arbiter == form.beneficiary) {
+      setShowAlert({
+        status: true,
+        type: "error",
+        message: "Arbiter and Beneficiary can't be same",
+      });
+      return;
+    }
+    else if (parseFloat(form.value) < 0.01) {
+      console.log("form.value", parseFloat(form.value));
+      setShowAlert({
+        status: true,
+        type: "error",
+        message: "Amount must be greater or equal to 0.01 Eth",
+      });
+      return;
+    }
+    initContract(form.arbiter, form.beneficiary, form.value);
+    
+  }
 
   return (
     <div className="overflow-hidden flex flex-col justify-center items-center md:px-20 px-1">
@@ -21,12 +75,41 @@ function App() {
           </h1>
 
           <div className="h-[340px] md:w-[95%] w-[26rem] flex flex-col justify-center items-center">
-            <div className="flex justify-center items-center">
-              You need to deploy your own escrow contract before initiate it !!!
-            </div>
-            <div className="m-2">
-              <CustomButton type="button" title="Deploy" restStyles="" />
-            </div>
+            {contract == "" ? (
+              <>
+                <div className="flex justify-center items-center">
+                  You need to deploy your own escrow contract before initiate it
+                  !!!
+                </div>
+                <div className="m-2">
+                  <CustomButton
+                    type="button"
+                    title="Deploy"
+                    restStyles=""
+                    handleClick={deployContract}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <div className="flex justify-center items-center">
+                    You have already deployed your contract !!!
+                  </div>
+                  <div className=" text-lg text-siteViolet">
+                    {contract}
+                    <div className="m-2 flex justify-center items-center">
+                      <CustomButton
+                        type="button"
+                        title="Deploy new contract"
+                        restStyles=""
+                        handleClick={deployContract}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <div className="w-5 h-5" />
@@ -35,16 +118,31 @@ function App() {
             {" "}
             Initialise Escrow{" "}
           </h1>
-          <form className="w-full flex flex-col m-2">
+          <form className="w-full flex flex-col m-2" onSubmit={submitForm}>
             <InputField
               label="Arbiter"
+              value={form.arbiter}
               placeHolder="0x452A12ad65C41D9A88f2515Af6c6F364060D4CE8"
+              handleValueChange={(e) =>
+                handleFormFieldChange("arbiter", e.target.value)
+              }
             />
             <InputField
               label="Beneficiary"
               placeHolder="0x452A12ad65C41D9A88f2515Af6c6F364060D4CE8"
+              value={form.beneficiary}
+              handleValueChange={(e) =>
+                handleFormFieldChange("beneficiary", e.target.value)
+              }
             />
-            <InputField label="Amount" placeHolder="0.01 Eth" />
+            <InputField
+              label="Amount"
+              placeHolder="0.01 Eth"
+              value={form.value}
+              handleValueChange={(e) =>
+                handleFormFieldChange("value", e.target.value)
+              }
+            />
             <div className="flex justify-center items-center m-2">
               <CustomButton type="submit" title="Initiate" restStyles="" />
             </div>
@@ -52,7 +150,7 @@ function App() {
         </div>
       </div>
 
-      {showTable && <Datatable /> }
+      {showTable && <Datatable />}
     </div>
   );
 }

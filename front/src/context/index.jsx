@@ -1,19 +1,22 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 import Web3Modal, { local } from "web3modal";
 import { GetParams } from "../utils";
+import { deploy, initEscrow, getEscrows } from "../contract";
 
 const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState("");
-  const [provider, setProvider] = useState("");
+  const [provider, setProvider] = useState();
   const [contract, setContract] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [showTable, setShowTable] = useState(false);
-
-  const providers = new ethers.providers.Web3Provider(window.ethereum);
+  const [balance, setBalance] = useState();
+  const [signer, setSigner] = useState();
+  const [escrows, setEscrows] = useState([]);
+  // const provider = new ethers.providers.Web3Provider(window.ethereum);
 
   const [showAlert, setShowAlert] = useState({
     status: false,
@@ -24,55 +27,65 @@ export const GlobalContextProvider = ({ children }) => {
 
   const updateCurrentWalletAddress = async () => {
     const accounts = await providers.send("eth_requestAccounts", []);
-    // const signer = providers.getSigner();
     if (accounts) setWalletAddress(accounts[0]);
   };
 
+  const deployContract = async () => {
+    console.log(signer, "signer");
+    const contract = await deploy(signer);
+    console.log(contract);
+    setContract(contract);
+    localStorage.setItem("contract", contract);
+  };
+
+  const initContract = async (arbiter, beneficiary, value) => {
+    const init = await initEscrow(
+      contract,
+      arbiter,
+      beneficiary,
+      ethers.utils.parseEther(value)
+    );
+    console.log("__________I N I T__________");
+    setShowAlert({
+      status: true,
+      type: "success",
+      message: "Contract initiated successfully",
+    });
+    console.log(init);
+  };
+
   useEffect(() => {
-    if (walletAddress != "") setShowTable(true)
+    if (
+      walletAddress != "" &&
+      parseInt(window.ethereum.chainId, 16) == 11155111
+    )
+      setShowTable(true);
+
+    // getBalance();
   }, [walletAddress]);
 
-  // useEffect(() => {
-  //   updateCurrentWalletAddress();
+  useEffect(() => {
+    // get provider and signer from local storage
+    // const pr = localStorage.getItem("provider");
+    // const si = localStorage.getItem("signer");
+    // setSigner(si);
+    // setProvider(pr);
 
-  //   window?.ethereum?.on("accountsChanged", updateCurrentWalletAddress);
-  // }, []);
+    const Balance = async () => {
+      setProvider(new ethers.providers.Web3Provider(window.ethereum));
+      let bal = await provider.getBalance(walletAddress);
+      setBalance(ethers.utils.formatEther(bal));
+    };
+    Balance();
+  }, [walletAddress]);
 
-  //* Reset web3 on boarding modal params
-  // useEffect(() => {
-  //   const resetParams = async () => {
-  //     const currentStep = await GetParams();
-
-  //     setStep(currentStep.step);
-  //   };
-
-  //   resetParams();
-
-  //   window?.ethereum?.on("chainChanged", () => resetParams());
-  //   window?.ethereum?.on("accountChange", () => resetParams());
-  // }, []);
-
-  // useEffect(() => {
-  //   updateCurrentWalletAddress();
-
-  //   window?.ethereum?.on("accountsChanged", updateCurrentWalletAddress);
-  // }, []);
-
-  //* Set the smart contract and provider to the state
-  // useEffect(() => {
-  //   const setSmartContractAndProvider = async () => {
-  //     const web3Modal = new Web3Modal();
-  //     const connection = await web3Modal.connect();
-  //     const newProvider = new ethers.providers.Web3Provider(connection);
-  //     const signer = newProvider.getSigner();
-  //     const newContract = new ethers.Contract(ADDRESS, ABI, signer);
-
-  //     setProvider(newProvider);
-  //     setContract(newContract);
-  //   };
-
-  //   setSmartContractAndProvider();
-  // }, []);
+  useEffect(() => {
+    // verify if there is a contract in local storage
+    const CONTRACT = localStorage.getItem("contract");
+    if (CONTRACT) {
+      setContract(CONTRACT);
+    }
+  }, [contract]);
 
   useEffect(() => {
     if (showAlert?.status) {
@@ -83,6 +96,19 @@ export const GlobalContextProvider = ({ children }) => {
       return () => clearTimeout(timer);
     }
   }, [showAlert]);
+
+  useEffect(() => {
+    if (contract) {
+      const getAllEscrows = async () => {
+        const Escrows = await getEscrows(contract);
+        Escrows.forEach((escrow) => {
+          setEscrows((prev) => [...prev, escrow]);
+        });
+      };
+      getAllEscrows();
+    }
+  }, [contract]);
+
 
   return (
     <GlobalContext.Provider
@@ -99,6 +125,10 @@ export const GlobalContextProvider = ({ children }) => {
         modalIsOpen,
         setIsOpen,
         showTable,
+        deployContract,
+        initContract,
+        balance,
+        escrows,
       }}
     >
       {children}

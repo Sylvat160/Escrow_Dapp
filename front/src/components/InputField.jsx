@@ -11,9 +11,7 @@ const InputField = ( {label, placeHolder, value, handleValueChange }) => {
         type="text"
         placeholder={placeHolder}
         value={value}
-        onChange={(e) => {
-            handleValueChange(e.target.value);
-        }}
+        onChange={handleValueChange}
         className={styles.input}
       />
     </>
