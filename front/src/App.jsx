@@ -178,7 +178,7 @@ function App() {
               NB : You can approve only if you are the arbiter of the contract
             </span>
             <div className="m-2 flex justify-center items-center">
-              <form className="w-full flex flex-col">
+              <form className="w-full flex flex-col" onSubmit={handleApproved}>
                 <InputField
                   label="Contract Address"
                   placeHolder="0x452A12ad65C41D9A88f2515Af6c6F364060D4CE8"
@@ -189,10 +189,10 @@ function App() {
                 />
                 <div className="flex flex-col justify-center items-center m-2">
                   <CustomButton
-                    type="button"
+                    type="submit"
                     title="Approve"
                     restStyles=""
-                    handleClick={handleApproved}
+                    // handleClick={handleApproved}
                   />
                 </div>
               </form>

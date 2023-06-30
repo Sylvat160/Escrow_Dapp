@@ -4,7 +4,7 @@ import styles from "../styles";
 
 const Alert = ({ type, message }) => {
   return (
-    <div className={`${styles.alertContainer} ${styles.flexCenter}`}>
+    <div className={`${styles.alertContainer} ${styles.flexCenter} absolute`}>
       <div className={`${styles.alertWrapper} ${styles[type]}`}>
         <AlertIcon type={type} /> {message}
       </div>

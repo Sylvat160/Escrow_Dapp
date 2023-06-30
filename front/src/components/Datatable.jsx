@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from "react";
 import { useGlobalContext } from "../context";
 import { shortenAddress , mediumAddress} from "../utils";
+import { CopyToClipboard } from "."
 const Datatable = () => {
   const { escrows } = useGlobalContext();
 
@@ -81,7 +82,6 @@ const Datatable = () => {
                   </tr>
                 </thead>
                 <tbody>
-                 
                   {escrows &&
                     escrows?.map((escrow, index) => (
                       <tr key={`${escrow[2]}-${index}`}>
@@ -96,7 +96,8 @@ const Datatable = () => {
                             </div>
                             <div className="ml-3">
                               <p className="text-gray-100 whitespace-no-wrap">
-                                {mediumAddress(escrow[0])}
+                                {mediumAddress(escrow[0])}{" "}
+                                <CopyToClipboard text={escrow[0]} />
                               </p>
                             </div>
                           </div>
