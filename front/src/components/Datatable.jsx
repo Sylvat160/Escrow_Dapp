@@ -81,11 +81,7 @@ const Datatable = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* <tr>
-                    {escrows.map((element, innerIndex) => (
-                      <span key={innerIndex}>{element.toString()} </span>
-                    ))}
-                  </tr> */}
+                 
                   {escrows &&
                     escrows?.map((escrow, index) => (
                       <tr key={`${escrow[2]}-${index}`}>

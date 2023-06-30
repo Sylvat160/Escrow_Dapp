@@ -2,7 +2,7 @@ import React, { useContext, createContext, useState, useEffect } from "react";
 import { Contract, ethers } from "ethers";
 import Web3Modal, { local } from "web3modal";
 import { GetParams } from "../utils";
-import { deploy, initEscrow, getEscrows } from "../contract";
+import { deploy, initEscrow, getEscrows, approveEscrow } from "../contract";
 
 const GlobalContext = createContext();
 
@@ -53,6 +53,29 @@ export const GlobalContextProvider = ({ children }) => {
     });
     console.log(init);
   };
+
+  const approve = async (address) => {
+    let isAddressPresent = false;
+
+    for (let i = 0; i < escrows.length; i++) {
+      for (let j = 0; j < escrows[i].length; j++) {
+        if (escrows[i][j] === address) {
+          isAddressPresent = true;
+          break;
+        }
+      }
+    }
+
+    if (!isAddressPresent) {
+      setShowAlert({
+        status: true,
+        type: "error",
+        message: "Contract not found",
+      });
+      return;
+    }
+    await approveEscrow(address);
+  }
 
   useEffect(() => {
     if (
@@ -129,6 +152,7 @@ export const GlobalContextProvider = ({ children }) => {
         initContract,
         balance,
         escrows,
+        approve,
       }}
     >
       {children}

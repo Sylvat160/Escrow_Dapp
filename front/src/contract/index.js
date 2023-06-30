@@ -98,3 +98,23 @@ export const getEscrows = async (contractAddress) => {
     console.error('Failed to get escrows:', error);
   }
 }
+
+// approved escrow 
+export const approveEscrow = async (contractAddress) => {
+  try {
+    // Connect with MetaMask and get the signer
+    const signer = await connectWithMetaMask();
+
+    const contract = new ethers.Contract(contractAddress, ABI, signer);
+
+    const approveEscrow = await contract.approved();
+
+    // Wait for the contract to be deployed
+    console.log('Escrow approved', approveEscrow);
+
+    return approveEscrow;
+
+  } catch (error) {
+    console.error('Failed to approve escrow:', error);
+  }
+}

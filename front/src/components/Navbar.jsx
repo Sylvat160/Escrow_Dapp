@@ -24,7 +24,7 @@ const Navbar = () => {
                 type="button"
                 title="Connect"
                 handleClick={updateCurrentWalletAddress}
-                restStyles="hover:bg-[#328A9A]"
+                restStyles=""
               />
             </>
           ) : (

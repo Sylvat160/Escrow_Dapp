@@ -17,6 +17,7 @@ function App() {
     contract,
     initContract,
     setShowAlert,
+    approve,
   } = useGlobalContext();
 
   const [form, setForm] = useState({
@@ -24,6 +25,8 @@ function App() {
     beneficiary: "",
     value: "",
   });
+
+  const [contractAddress, setContractAdrress] = useState("")
 
   const handleFormFieldChange = (fieldName, value) => {
     setForm({ ...form, [fieldName]: value });
@@ -38,16 +41,14 @@ function App() {
         message: "Please fill all the fields",
       });
       return;
-    }
-    else if (form.arbiter == form.beneficiary) {
+    } else if (form.arbiter == form.beneficiary) {
       setShowAlert({
         status: true,
         type: "error",
         message: "Arbiter and Beneficiary can't be same",
       });
       return;
-    }
-    else if (parseFloat(form.value) < 0.01) {
+    } else if (parseFloat(form.value) < 0.01) {
       console.log("form.value", parseFloat(form.value));
       setShowAlert({
         status: true,
@@ -57,7 +58,21 @@ function App() {
       return;
     }
     initContract(form.arbiter, form.beneficiary, form.value);
-    
+
+  };
+
+  const handleApproved = (e) => {
+    e.preventDefault();
+    if (contractAddress == "") {
+      setShowAlert({
+        status: true,
+        type: "error",
+        message: "The address is required",
+      });
+      return;
+    }
+
+    approve(contractAddress);
   }
 
   return (
@@ -96,7 +111,7 @@ function App() {
                   <div className="flex justify-center items-center">
                     You have already deployed your contract !!!
                   </div>
-                  <div className=" text-lg text-siteViolet">
+                  <div className=" md:text-lg text-sm text-siteViolet">
                     {contract}
                     <div className="m-2 flex justify-center items-center">
                       <CustomButton
@@ -147,6 +162,42 @@ function App() {
               <CustomButton type="submit" title="Initiate" restStyles="" />
             </div>
           </form>
+        </div>
+      </div>
+      <div className=" bg-[#111111] md:w-[45%] w-[26rem] drop-shadow-2xl border-[0.01px] border-gray-500 rounded-md m-2">
+        <h1 className="text-[24px] m-3 border-b-[0.01px] border-gray-600">
+          {" "}
+          Approved Escrow{" "}
+        </h1>
+        <div className="flex flex-col justify-center items-center w-full h-[340px]">
+          <div className="flex justify-center items-center">
+            Approve an Escrow contract!!!
+          </div>
+          <div className=" md:text-lg text-sm text-siteViolet">
+            <span className="flex justify-center items-center">
+              NB : You can approve only if you are the arbiter of the contract
+            </span>
+            <div className="m-2 flex justify-center items-center">
+              <form className="w-full flex flex-col">
+                <InputField
+                  label="Contract Address"
+                  placeHolder="0x452A12ad65C41D9A88f2515Af6c6F364060D4CE8"
+                  value={contractAddress}
+                  handleValueChange={(e) =>
+                    setContractAdrress(e.target.value)
+                  }
+                />
+                <div className="flex flex-col justify-center items-center m-2">
+                  <CustomButton
+                    type="button"
+                    title="Approve"
+                    restStyles=""
+                    handleClick={handleApproved}
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
 
