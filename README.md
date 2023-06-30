@@ -1,3 +1,3 @@
 <div align=center>
- <img src="./esscrow.png" alt="welcome"/>
+ <img src="./escrow.png" alt="welcome"/>
 </div>
